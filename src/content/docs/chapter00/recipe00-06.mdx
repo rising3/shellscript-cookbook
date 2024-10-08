@@ -1,0 +1,78 @@
+---
+title: レシピ0-6 テスト
+---
+
+import { Tabs, TabItem, Code } from '@astrojs/starlight/components';
+import importedCode from '/samples/00/hello.bats?raw';
+
+プログラミングにおけるテスト/ユニットテストには、次のような役割がある。
+- コードに欠陥が生じないように予防する
+- コードの欠陥を早期に発見する
+- コードが正しく変更されたことを確認する
+- コードの理解と修正を容易にする
+
+ユニットテストは、プログラムを構成する小さな単位（ユニット）に対してテストを行うことで、機能ごとに正常な動作を担保することを目的としている。
+通常、関数やメソッドがユニットテストの単位となる。
+ユニットテストは、次のようなメリットがある。
+- コードベースを深く理解できる
+- 既存のテストにより、変更の影響範囲を即座に確認できる
+- コードの修正や機能追加が迅速に行える
+- 不具合を早期に発見し、修正や調整ができる
+
+ユニットテストは、ソースコード作成時などの早い段階で開発者によって実施されることが多いのが特徴である。
+
+テスト方法には決まりはないが、一般的にはテスティングフレームワークを用いてテストを自動化することが多い。
+bashで使えそうなテスティングフレームワークは次のようなものがあるが、ポピュラーなものは[bats](https://github.com/bats-core/bats-core)だろう。
+
+
+- **[bats](https://github.com/bats-core/bats-core):** 終了ステータスや出力を評価するスタイルのテストフレームワーク。bashなどのシェルスクリプトに限らず、CLI形式で実行できるプログラムのテストでも利用できる。学習コストは低い。
+- **[Shellspec](https://github.com/shellspec/shellspec):** 高性能の一言に尽きる。BDDスタイルのテストフレームワーク。BDDに慣れていても学習コストはそれなりに高い。
+- **[shUnit2](https://github.com/kward/shunit2):** xUnitのテストフレームワーク。既に安定しているためか、開発はしばらく止まっている。学習コストは低い。
+
+
+batsはパッケージマネジャーからインストールすることができる。
+
+<Tabs>
+<TabItem label="Debian系">
+```bash
+sudo apt install bats
+```
+</TabItem>
+<TabItem label="RedHat系">
+```bash
+sudo dnf install bats
+```
+</TabItem>
+<TabItem label="ArchLinux系">
+```bash
+sudo pacman -S bats
+```
+</TabItem>
+<TabItem label="Homebrew">
+```bash
+brew install bats
+```
+</TabItem>
+</Tabs>
+
+このクックブックでは、batsを使用する。
+
+batsの使い方を簡単に紹介する。
+
+batsの `README.md` で紹介されているサンプルである。
+
+<Code code={importedCode} lang="bash" title="/samples/00/hello.bats" />
+
+batsのテストケースのファイルの拡張子は`.bats`にするのが一般的で、次のように実行する。
+
+```bash
+samples/00 » bats hello.bats
+hello.bats
+ ✓ addition using bc
+ ✓ addition using dc
+
+2 tests, 0 failures
+```
+
+詳細は、[Welcome to bats-core’s documentation!](https://bats-core.readthedocs.io/en/stable/)を参照されたい。
+

@@ -1,0 +1,76 @@
+---
+title: レシピ2-3 連想配列の変数
+---
+
+bash では、一般的なプログラミング言語と同様に連想配列が使用できる。
+
+連想配列の変数は、`declare -A 変数名`と明示的に宣言する。
+また連想配列変数の代入文の右辺に `([キー名1]=値1 ... [キー名n]=値n)` を用いて宣言と同時に初期化できる。
+
+```bash
+declare -A color
+declare -A color=([fore]=blue [back]=yellow)
+```
+
+## 参照
+
+連想配列の要素を参照するには、 `${変数名[キー名]}` で参照できる。
+配列と同様に存在しないキー名を指定してもエラーにならないため、注意してほしい。
+
+```bash
+declare -A color=([fore]=blue [back]=yellow)
+
+echo "${color[fore]}"   # blue
+echo "${color[back]}"   # yellow 
+```
+
+連想配列の要素数は、 `${#変数名[@]}` で取得できる。
+
+```bash
+declare -A color=([fore]=blue [back]=yellow)
+
+echo "${#color[@]}"     # 2
+```
+
+キーに `@` か `*` を指定することで全要素を取得できる。
+`@` か `*` は、特殊パラメータで説明した仕様通りである。
+
+```bash
+declare -A color=([fore]=blue [back]=yellow)
+
+echo "${color[@]}"      # "blue" "yellow"(要素を個別に展開)
+echo "${color[*]}"      # "blue yellow"  (要素をまとめて展開)
+```
+
+変数名の前に `!` を付けるとキー名の一覧を取得できる。
+
+```bash
+declare -A color=([fore]=blue [back]=yellow)
+
+echo "${!color[@]}"     # fore back
+```
+
+## 代入
+
+連想配列変数の代入文の右辺に `([キー名1]=値1 ... [キー名n]=値n)` で複数の要素をまとめて代入できる。
+また `変数名[キー名]=値` で、既存のキーの値を上書きする、もしくは新規のキーと値を登録することができる。
+
+```bash
+declare -A color
+color=([fore]=blue [back]=yellow)
+echo "${color[@]}"      # "blue" "yellow"
+
+color[fore]=green
+color[priority]=1
+echo "${color[@]}"      # "green" "yellow" "1"
+```
+## 削除
+
+連想配列の要素を削除するには、 `unset` コマンドを使用する。
+
+```bash
+declare -A color=([fore]=blue [back]=yellow [priority]=1)
+
+unset "color[fore]"
+echo "${color[fore]}" # 空要素
+```

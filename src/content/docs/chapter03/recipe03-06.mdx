@@ -1,0 +1,15 @@
+---
+title: レシピ3-6 算術式展開
+---
+import { Badge } from '@astrojs/starlight/components';
+
+[算術式評価](/shellscript-cookbook/chapter02/recipe02-01#算術式評価)の結果を展開する。算術式展開は `$((算術式評価))` と書くことで算術式評価を行い、結果を展開する。
+
+使用例:
+```bash
+» x=1
+» y=2
+» z="result: $((x+y))"
+» echo $z
+result: 3
+```

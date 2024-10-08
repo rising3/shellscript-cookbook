@@ -1,0 +1,81 @@
+---
+title: レシピ0-7 ビルド手順の自動化
+---
+
+import { Code, Tabs, TabItem } from '@astrojs/starlight/components';
+import importedCode from '/samples/Makefile_sh?raw';
+
+プログラミングにおけるビルドの役割は、一般的には作成したソースコードをコンピュータが実行可能なソフトウェアに変換することである。
+またフォーマッターやリンター、テストなどの実行をビルドに含めることが多く、ビルド手順は複雑化している。
+そのようなビルド手順を覚えたり手順を文書化するような行為はトラブルの元で自殺行為であるので踏みとどまってほしい。
+
+ビルド手順をシェルスクリプトで書いても良いが、世の中にはビルド手順を自動化し、再現できる便利なツールが沢山存在する。
+開発言語別に代表的な例を挙げるとC/C++ならMake、JavaならAnt, Maven, Gradle、Googleが主導で開発している汎用的なビルドツールBazelなど、紹介するのが面倒になるくらい存在する。
+例に挙げたビルドツールは、対応する開発言語で使用すると大きなメリットを享受することができるが、汎用的なビルドツールとして使用してもそれなりのメリットを享受することができる。
+
+このクックブックのターゲットはbashのスクリプトなので、高性能・重量級のビルドツールは避け、シンプルかつ軽量なビルドツールを選択したい。またインストールも容易なものが良いので[GNU Make](https://www.gnu.org/software/make/)で十分であろう。
+
+GNU Makeはパッケージマネジャーからインストールすることができる。
+
+<Tabs>
+<TabItem label="Debian系">
+```bash
+sudo apt install make
+```
+</TabItem>
+<TabItem label="RedHat系">
+```bash
+sudo dnf install make
+```
+</TabItem>
+<TabItem label="ArchLinux系">
+```bash
+sudo pacman -S make
+```
+</TabItem>
+<TabItem label="Homebrew">
+```bash
+brew install make
+```
+</TabItem>
+</Tabs>
+
+GNU Makeの使い方を簡単に紹介する。
+
+`Makefile`というファイルに次のようなルールを書く。
+
+```make
+target:   dependencies ...
+          commands
+          ...
+```
+
+以上（笑）。
+
+これまで紹介した各ツールを組み込んだ`Makefile`を紹介する。
+
+<Code code={importedCode} lang="make" title="/samples/Makefile_sh" />
+
+この`Makefile`には、次のルールを定義している。
+
+- **all** fmt, lint, testを順番に実行する
+- **fmt**  shfmtを起動してスクリプトを整形する
+- **lint** shellcheckを起動してスクリプトをチェックする
+- **test** batsを起動してテストスクリプトを実行する 
+
+makeを実行する際に`TARGET`を対象のシェルスクリプトのファイル名に上書きして実行することを想定している。
+
+makeコマンドを実行すると次のような結果になる。
+```bash
+» make TARGET=01_hello_world.sh -f ../Makefile_sh
+shfmt -i 2 -ci -w 01_hello_world.sh
+shellcheck  01_hello_world.sh
+bats  01_hello_world.bats
+01_hello_world.bats
+ ✓ say Hello,world
+
+1 test, 0 failures
+
+```
+
+`Makefile`を用意することで、複数人で開発を行う際やCI環境でビルドが可能になる。

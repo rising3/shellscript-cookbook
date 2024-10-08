@@ -1,0 +1,56 @@
+---
+title: レシピ1-6 明示的な変数の宣言
+---
+
+import { Code } from '@astrojs/starlight/components';
+import importedCode from '/samples/01/06_bash_declare.sh?raw';
+
+bashの変数は、特別な宣言は不要で変数を使用することができる。
+次のように変数を宣言すると通常は文字列型の変数として取り扱われる。
+
+```bash
+» var1=variable
+» var2=1+2
+» bash $var1
+variable
+» bash $var2
+1+2
+```
+
+bashでは明示的に変数を宣言する方法が用意されており、次のビルトインコマンドいずれかを用いて宣言する。
+- declare
+- typeset (bashにおいてはdeclareの別名扱い、他のシェルではtypesetが使われることが多い)
+
+２つとも仕様に違いはないが、このクックブックでは declare を使用する。
+declare を使った変数宣言は、`declare [オプション] 変数名=値`と書く。 
+
+**declareの変数宣言に関する主なオプション:**
+オプション | 説明
+--- | ---
+-a | 配列の変数を宣言する
+-A | 連想配列の変数を宣言する
+-i | 数値型の変数を宣言する
+-l | 文字列型(小文字のみ)の変数を宣言する
+-r | 読み取り専用の変数を宣言する
+-u | 文字列型(大文字のみ)の変数の値を宣言する
+-x | 環境変数を宣言する(exportされる)
+
+次のシェルスクリプトを実行し、宣言の違いを確認してほしい(`-r` オプションと `-x` オプションは、定数と環境変数を参照されたい)。
+
+**明示的な変数宣言例:**
+<Code code={importedCode} lang="bash" title="/samples/01/06_bash_declare.sh" />
+
+**実行結果:**
+```bash
+» ./06_bash_declare.sh
+test
+3
+foo
+bar
+TEST
+test
+```
+
+
+変数は、 unset で変数を削除することができる。
+

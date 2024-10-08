@@ -1,0 +1,98 @@
+---
+title: レシピ2-2 配列型の変数
+---
+
+bash では、一般的なプログラミング言語と同様に配列が使用できる。
+配列のインデックスは0から始まる。
+
+配列の変数は、`declare -a 変数名`と明示的に宣言するか、変数の代入文の右辺に `()` を用いて宣言と同時に初期化できる。
+
+```bash
+declare -a arr1         # 明示的な配列変数の宣言
+arr2=()                 # 空配列変数の宣言
+colors=(red green blue) # ３要素の配列変数の宣言
+```
+
+## 参照
+
+配列の要素を参照するには、 `${変数名[インデックス]}` で参照できる。
+存在しないインデックスを指定してもエラーにならないため、注意してほしい。
+
+```bash
+colors=(red green blue)
+
+echo "${colors[0]}" # red
+echo "${colors[2]}" # blue 
+echo "${colors}"    # red (インデックスを省略するとインデックス0を参照)
+```
+
+配列の要素数は、 `${#変数名[@]}` で取得できる。
+
+```bash
+colors=(red green blue)
+
+echo "${#colors[@]}" # 3
+```
+
+インデックスに `*` か `@` を指定することで全要素を取得できる。
+`*` か `@` は、特殊パラメータで説明した仕様通りである。
+
+```bash
+colors=(red green blue)
+
+echo "${colors[@]}" # "red" "greeen" "blue" (要素を個別に展開)
+echo "${colors[*]}" # "red greeen blue"     (要素をまとめて展開)
+```
+
+変数名の前に `!` を付けると値が存在するインデックスの一覧を取得できる。
+
+```bash
+colors=(red green blue)
+
+echo "${!colors[@]}" # 0 1 2
+```
+
+## 代入
+
+`()` 内に要素をスペース区切りで定義するとインデックスが０から始まる配列として初期化される。
+また `()` 内に `[インデックス]=値` の書式で要素を宣言すると指定したインデックスに値を代入することができる。
+
+```bash
+alphabets=(a b c)
+echo "${alphabets[@]}" # "a" "b" "c"
+
+alphabets=(a b c [4]=e f)
+echo "${alphabets[@]}" # "a" "b" "c" "e" "f"
+```
+
+### 要素の追加
+
+`"$変数名[@]"` と組み合わせることで、元の配列の先頭や末尾に要素を追加することができる。
+末尾への追加は、`+=` でも可能である。
+```bash
+alphabets=(a b c)
+echo "${alphabets[@]}" # "a" "b" "c"
+
+# 先頭に要素を追加
+alphabets=(X Y Z "${alphabets[@]}")
+echo "${alphabets[@]}" # "X" "Y" ""Z "a" "b" "c"
+
+# 末尾に要素を追加
+alphabets=(a b c)
+alphabets=("${alphabets[@]}" d)
+echo "${alphabets[@]}" # "a" "b" "c" "d"
+
+alphabets+=(e f g)
+echo "${alphabets[@]}" # "a" "b" "c" "d" "e" "f" "g"
+```
+
+## 削除
+
+配列の要素を削除するには、 `unset` コマンドを使用する。
+
+```bash
+colors=(red green blue)
+
+unset "colors[1]"
+echo "${colors[1]}" # 空要素
+```

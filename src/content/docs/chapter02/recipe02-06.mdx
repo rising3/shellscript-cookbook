@@ -1,0 +1,54 @@
+---
+title: レシピ2-6 [[ ]]
+---
+
+import { Code } from '@astrojs/starlight/components';
+import importedCode1 from '/samples/02/06_conditional_constructs1.sh?raw';
+import importedCode2 from '/samples/02/06_conditional_constructs2.sh?raw';
+import importedCode3 from '/samples/02/06_conditional_constructs3.sh?raw';
+import importedCodePatternMatches from '/samples/02/06_conditional_constructs_pattern_matches.sh?raw';
+import importedCodeRegex from '/samples/02/06_conditional_constructs_regex.sh?raw';
+
+`[` コマンドでも条件式を書くことができるが、結合演算子や && や || を用いた複雑な条件式は可読性も低くなる。
+そのような場合は、`[[ ]]` を使用すると && や || を用いて複雑な条件式も簡素に表現できる。
+なお`[[ ]]` はbashの予約語になる。
+
+`[[ ]]` は、`[` コマンドとほとんど同じ演算子が使用できる。
+
+<Code code={importedCode1} lang="bash" title="/samples/02/06_conditional_constructs1.sh" />
+
+## `[[ ]]` と `[` コマンド の違い
+
+`[` コマンドで書ける条件式は、ほとんど`[[ ]]` に置き換えることができるので、`[[ ]]` だけ使用しても問題はない。
+ただし、`[[ ]]` の中では、単語分割とパス名展開が行われないため、変数のクォートの有無で `[` コマンドの実行と結果が変わる。
+
+**単語展開による動作結果が異なる例1:**
+
+<Code code={importedCode2} lang="bash" title="/samples/02/06_conditional_constructs2.sh" />
+
+**単語展開による動作結果が異なる例2:**
+
+<Code code={importedCode3} lang="bash" title="/samples/02/06_conditional_constructs3.sh" />
+
+bashでは、ダブルクォーテーション(`"`)でクォートすれば、その内側では単語分割が行われず、1つの単語とみなされる。
+`[[ ]]` の中では、クォートされていなくても、単語分割は行われない。
+`[[ ]]` に限った話ではないが、変数は常にダブルクォーテーション(`"`)でクォートすることを推奨する。
+
+:::note[単語分割とパス名展開]
+単語分割とは、パラメータ展開、コマンド置換、算術式典型を行った後の文字列をスペース、ダブ、改行によって複数の単語に区切る機能のこと。
+
+パス名展開とは、 `*` や `?` のようなワイルドカード文字列の組み合わせとマッチするファイル名やディレクトリ名をすべて展開する機能のこと。
+:::
+
+## パターンマッチ
+
+`[[ ]]` 内は、`*` などのパス名展開の機能は無効になり、そのままの文字として扱われる。
+ただし、 `==` や `!=` の右辺にパス名展開の記号を書いた場合は、パターン文字列として取り扱われ、パターンマッチを用いた条件式が使用できる。
+
+<Code code={importedCodePatternMatches} lang="bash" title="/samples/02/06_conditional_constructs_pattern_matches.sh" />
+
+## 正規表現
+
+パターンマッチのほかに `=~` 演算子を用いることで右辺に書いた文字列を正規表現とみなして、左辺が正規表現にマッチするか判定することができる。
+
+<Code code={importedCodeRegex} lang="bash" title="/samples/02/06_conditional_constructs_regex.sh" />

@@ -1,0 +1,37 @@
+---
+title: レシピ3-1 シェル展開の順序
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+シェル展開は、以下の順序で行われる。
+
+## 展開の順序
+
+```
+{~gop,$tex}t `echo string` * $((1+2))
+
+```
+
+<Steps>
+
+1. ブレース展開
+<p>`{`\~/op,\$tex`}`t \`echo string\` * \$((1+2))</p>
+
+2. チルダ展開
+<p>**`~/opt`** **$text** \`echo string\` * \$((1+2))</p>
+
+3. パラメータ展開/コマンド置換/算術式展開
+<p>**/自分のホームディレクトリ/opt** `$text` \``echo string`\` * `$((1+2))`</p>
+<Aside type="note">text変数には、 `Hello World` が代入されている</Aside>
+
+4. 単語分割
+<p>/自分のホームディレクトリ/opt **Hello World** **string** `*` **3**</p>
+<Aside type="note">`Hello World` は、この時点で `Hello` と `World` の2単語として取り扱われる</Aside>
+
+5. パス名展開
+<p>/自分のホームディレクトリ/opt Hello World string **LICENSE README.md** 3</p>
+<Aside type="note">カレントディレクトリに存在している `LICENSE` と `README.md` というファイル名が展開される</Aside>
+
+</Steps>
