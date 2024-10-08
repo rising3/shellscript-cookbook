@@ -1,0 +1,85 @@
+---
+title: レシピ0-1 開発環境を準備する
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+シェルプログラミングを始めるには、次のものを準備する必要がある。
+
+- bashが動作するOS
+- bash
+- テキストエディタ
+
+既に開発環境が整っている場合は、読み飛ばしてほしい。
+
+## bashが動作するOS
+
+正直、bashが動作するOSであれば好みのOSで良いが、このクックブックではシェルからコマンドを実行するサンプルもあるので、UNIX/Linux系を推奨する。
+
+これからOSを準備する場合は、筆者の主観が入るが次を参考にしてほしい。
+
+### 仕事環境
+
+- **RHEL(Red Hat Enterprise Linux):** レッドハット社によって開発、販売されている業務向けのLinuxディストリビューション。
+- **[Ubuntu](https://ubuntu.com/download/desktop):** Debianから派生したCanonical社のLinuxディストリビューション。OSSと商用サポートが用意されている。
+- **Windows 11 - Ubuntu on WSL2:** Windowsに標準機能として導入されたLinux用Windowsサブシステム(WSL)を使用し、WindowsにUbuntuやFedoraなどのLinuxディストリビューションをインストールできる。マイクロソフトストアからUbuntuがインストールできる。
+- **(職場がMacであれば)macOS:** Appleが開発、販売するBSD系UNIXをベースに開発されたMacのオペレーティングシステムである。ストアアプリがあるがLinuxのパッケージマネジャー相当の標準コマンドはないため、Homebrewは必須。
+
+### 趣味、個人的な環境
+
+- **[Fedora Linux](https://fedoraproject.org/workstation/download):** レッドハット社が支援するコミュニティー「Fedora Project」によって開発されているRPM系Linuxディストリビューションである。Fedoraは最新の技術を積極的に取り込む事で知られており、現在はRawhideと呼ばれるローリングリリース版も用意している。筆者が長年愛用しているLinuxディストリビューションの1つである。
+- **[Manjaro Linux](https://manjaro.org/products/download/x86):** Arch Linuxをベースとしたディストリビューションの1つ。Arch Linuxとの互換性もあり、ローリングリリースモデルを採用している。またデスクトップ環境がプリインストールされており、Arch Linuxにおけるインストール及びデスクトップ環境構築に要する労力を省くことが図られている。筆者が最近愛用しているLinuxディストリビューションの1つである。
+- **Windows 11 - WSL2:** 仕事環境を参照。Linuxディストリビューションは、好みのものを選択すると良い。
+- **macOS:** 仕事環境を参照。
+
+---
+
+そのほかにもAWS / Azure / GCPに環境を作っても良いし、ちょっとした動作確認であれば [paiza.io](https://paiza.io/en/projects/new?locale=en-us)などを利用しても良い。
+
+## bash
+
+最新バージョンは5系であるが、仕事利用の場合はターゲットのバージョンを確認してインストールして欲しい。
+ただし、5系がインストールされていても4系の互換性を意識してプログラミングすれば、大抵は条件をクリアできるはずである。
+
+大抵のLinuxディストリビューションであればbashはインストールされているはずだが、それぞれのパッケージマネジャーを利用してインストールすることができる。
+
+<Tabs>
+<TabItem label="Debian系">
+```bash
+sudo apt install bash
+```
+</TabItem>
+<TabItem label="RedHat系">
+```bash
+sudo dnf install bash
+```
+</TabItem>
+<TabItem label="ArchLinux系">
+```bash
+sudo pacman -S bash
+```
+</TabItem>
+<TabItem label="Homebrew">
+```bash
+brew install bash
+```
+</TabItem>
+</Tabs>
+
+## テキストエディタ
+
+シェルスクリプトの編集作業を行うためにテキストエディタが必要になる。
+
+正直、テキストエディタであれば何でも良い。Linux系であれば、nanoやviでも良いし、バッケージマネージャーで好みのエディタをインストールしても良い。
+
+エンジニアが愛用するエディタは次のようなものがある。
+
+- ed
+- nano
+- vi
+- vim
+- emacs
+- atom
+- vscode
+
+最近、筆者は主にvscodeを利用しているが、その時の気分でvimやemacsを使い分けることもある。
