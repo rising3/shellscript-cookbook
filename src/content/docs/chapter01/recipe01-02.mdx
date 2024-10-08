@@ -1,0 +1,21 @@
+---
+title: レシピ1-2 コメントの書き方
+---
+
+bashのスクリプトでは、 コメントは`#`の後に書くことができる。
+
+```bash
+#コメント
+# これもコメント
+echo 'hi' # 行中にコメント
+# echo 'hi' # コメントアウト
+```
+スクリプト中の複雑もしくは重要なコードの部分にコメントは書くことで、可読性を高め他の人に意図を伝えることができる。
+変数の説明や処理の全てにコメントを書くのは可読性や保守性が低くなるのでやってはいけない。
+
+:::note[コメントの使い所]
+紹介した Google Shell Style Guideには、次のコメントのついて説明されている。
+- **[ファイルヘッダ](https://google.github.io/styleguide/shellguide.html#file-header):** スクリプトファイルの先頭にスクリプトの説明をコメントとして書く。コピーライトや著者情報はオプション。
+- **[関数ヘッダ](https://google.github.io/styleguide/shellguide.html#function-comments):** 関数の先頭に関数の説明をコメントとして書く。説明には、利用や変更するグローバル変数の一覧、引数、標準出力/標準エラー、戻り値の説明を加える。
+- **[実装へのコメント](https://google.github.io/styleguide/shellguide.html#implementation-comments):** 全てにコメントしてはいけない。重要部分にコメントを書き、コメントは短くまとめる。
+- **[TODO](https://google.github.io/styleguide/shellguide.html#todo-comments):** 一時的であったり、短期的な解決策、概ね良いが完全でないコードには`TODO`から始まるコメントを書く。

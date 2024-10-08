@@ -1,0 +1,174 @@
+---
+title: レシピ1-8 制御構造
+---
+
+import { Code } from '@astrojs/starlight/components';
+import importedIfCode from '/samples/01/08_bash_if.sh?raw';
+import importedForCode from '/samples/01/08_bash_for.sh?raw';
+import importedWhileCode from '/samples/01/08_bash_while.sh?raw';
+import importedUntilCode from '/samples/01/08_bash_until.sh?raw';
+import importedCaseCode from '/samples/01/08_bash_case.sh?raw';
+
+他のプログラミング言語と同様に、bashでも次の制御構造を使用できる。
+
+-  条件分岐(if 文)
+-  繰り返し(for 文/ while 文/ until 文)
+-  パターンマッチング(case 文)
+
+## 条件分岐(if文)
+
+if 文は条件分岐を行うための制御構造である。次の例では条件が真である場合に処理が実行され、偽の場合は何もしない。
+
+```bash
+if 条件; then
+  条件が真である場合の処理
+fi
+```
+
+elif 句を追加することで複数の条件を追加することができ、それぞれの条件にあった処理が実行できる。
+また else 句を追加すると全て偽であった場合の処理が実行できる。
+
+```bash
+if 条件1; then
+  条件1が真である場合の処理
+elif 条件2; then
+  条件2が真である場合の処理
+else
+  全て偽である場合の処理
+fi
+```
+
+### 条件の書き方
+
+bash の制御構造の条件の評価は、評価コマンドの実行結果によって条件分岐の制御を行う。
+
+```bash
+if [ "${1}" = 'abc' ]; then # [ ]は if 文のカッコではなく、 [ というコマンド
+  真の場合の処理
+fi
+```
+
+if の後ろに続く `[ ]` 部分は、 if 文の単なるカッコではなく評価コマンドであり、具体的には `[` というコマンドになる。
+`[` コマンドはビルトインコマンドの１つである。
+また `[` コマンドは、`test` コマンドの別名であり、同じコマンドである。
+可読性が高い `[` コマンドを使った書き方が好ましい。
+
+`[` コマンドは、渡された式の真偽を判定し、その結果を終了ステータスとして返す。
+終了ステータスは 0 であれば真、 0 以外であれば偽と判断する。
+if 文は、その終了ステータスを元に条件分岐の制御を行う。
+
+:::tip[コマンドの終了ステータス]
+UNIX/Linuxのコマンドの風習で成功は0、失敗は0以外の値を終了ステータスとして返す仕様のものが多い。
+シェルでは `$?` を使用して、直前に実行したコマンドの終了ステータスを参照できる。
+:::
+
+`[` コマンドに渡す評価演算子については、ここでは深く触れないが、よく使用される評価演算子を紹介する。
+
+#### 文字列の評価演算子 
+
+演算子 | 使用例 | 説明
+:---: | :---: | ---
+ = | s1 = s2 | s1 と s2 は等しい
+ == | s1 == s2 | = と同じ
+ != | s1 != s2 | s1 と s2 は等しくない
+ \< | s1 < s2 | s1 は s2 よりも、辞書順に前にある
+ \> | s1 > s2 | s1 は s2 よりも、辞書順に後にある
+ -n | -n s1 | s1 は空文字列ではない
+ -z | -z s1 | s1 は空文字列である
+
+#### 整数の評価演算子 
+
+演算子 | 使用例 | 説明
+:---: | :---: | ---
+ -eq | i1 -eq i2 | i1 と i2 は等しい
+ -ne | i1 -ne i2 | i1 と i2 等しくない
+ -lt | i1 -lt i2 | i1 は i2 より小さい (\<)
+ -le | i1 -le i2 | i1 は i2 以下 (=\<)
+ -gt | i1 -gt i2 | i1 は i2 より大きい (\>)
+ -ge | i1 -ge i2 | i1 は i2 以上 (=\>)
+
+--- 
+
+次のシェルスクリプトを実行し、if 文の動作を確認してほしい。
+
+<Code code={importedIfCode} lang="bash" title="/samples/01/08_bash_if.sh" />
+
+## 繰り返し
+
+### for 文
+
+単語リストに対して繰り返し処理を行う。
+
+```bash
+for 変数 in 単語リスト; do
+  繰り返したい処理
+done
+```
+
+#### breakとcontinue
+
+繰り返し処理の中では、 `break` と `continue` のビルトインコマンドが使用できる。
+
+- **`break`:** 繰り返し処理から抜ける 
+- **`continue`:** 以降の処理をスキップし、次の繰り返し処理へ移行する
+
+---
+
+次のシェルスクリプトを実行し、for 文の動作を確認してほしい。
+
+<Code code={importedForCode} lang="bash" title="/samples/01/08_bash_for.sh" />
+
+### while 文
+
+指定した条件が真の時に繰り返し処理を行う。
+for 文と同様に、繰り返し処理の中では、 `break` と `continue` のビルトインコマンドが使用できる。
+
+```bash
+while コマンド; do
+  繰り返したい処理
+done
+```
+
+次のシェルスクリプトを実行し、while 文の動作を確認してほしい。
+
+<Code code={importedWhileCode} lang="bash" title="/samples/01/08_bash_while.sh" />
+
+### until 文
+
+指定した条件が偽の時に繰り返し処理を行う。
+for 文と同様に、繰り返し処理の中では、 `break` と `continue` のビルトインコマンドが使用できる。
+
+```bash
+until コマンド; do
+  繰り返したい処理
+done
+```
+
+次のシェルスクリプトを実行し、until 文の動作を確認してほしい。
+
+<Code code={importedUntilCode} lang="bash" title="/samples/01/08_bash_until.sh" />
+
+## パターンマッチング(case 文)
+
+文字列に対して複数のパターンを指定して、それぞれのパターンにマッチした処理を実行する。
+
+```bash
+case 文字列 in
+  パターン1)
+    パターン１にマッチした場合の処理
+    ;;
+  パターン2)
+    パターン2にマッチした場合の処理
+    ;;
+  パターンn)
+    ...
+    ;;
+  *) 
+    全てのパターンにマッチしなかった場合の処理
+    ;;
+esac
+```
+
+次のシェルスクリプトを実行し、case 文の動作を確認してほしい。
+
+<Code code={importedCaseCode} lang="bash" title="/samples/01/08_bash_case.sh" />

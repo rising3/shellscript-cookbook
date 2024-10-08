@@ -1,0 +1,27 @@
+---
+title: レシピ1-4 定数
+---
+
+定数(読み取り専用の変数)は、`readonly` か `declare`を使用して宣言する。
+
+```bash
+readonly TARGET_PATH='/path'
+declare -r TARGET_PATH='/path'
+```
+
+定数は読み取り専用であるため、宣言後は上書きできない。
+
+```bash
+» readonly TARGET_PATH='/path'
+» TARGET_PATH=
+bash: TARGET_PATH: 読み取り専用の変数です
+```
+
+不変な値は積極的に定数として宣言し、定数を参照するように実装する。
+
+:::note[定数の命名規則]
+紹介した Google Shell Style Guide には、定数の命名規約について書かれている。
+
+- 変数名には大文字を使用し、単語の区切りにはアンダースコア(`_`)を使用する
+- 環境変数も定数と同様である
+:::

@@ -1,0 +1,43 @@
+---
+title: レシピ0-4 フォーマッター
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+ソースコードのフォーマッターは、ソースコードのインデントや体裁を自動的に整形して、ソースコードの可読性を向上させ、作業の効率化を図る役割がある。
+ソースコードの体裁を適切に整えることで、コードが読みやすくなり、バグを防ぐことにもつながる。
+
+bashのフォーマッターの中でポピュラーなものは[shfmt](https://www.mankier.com/1/shfmt)だろう。
+
+shfmtはパッケージマネジャーからインストールすることができる。
+
+<Tabs>
+<TabItem label="Debian系">
+```bash
+sudo apt install shfmt
+```
+</TabItem>
+<TabItem label="RedHat系">
+```bash
+sudo dnf install shfmt
+```
+</TabItem>
+<TabItem label="ArchLinux系">
+```bash
+sudo pacman -S shfmt
+```
+</TabItem>
+<TabItem label="Homebrew">
+```bash
+brew install shfmt
+```
+</TabItem>
+</Tabs>
+
+このクックブックでは、shfmtをフォーマッターとして使用する。
+
+[Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html)に適したソースコードの整形を行うには、次のようなオプションを指定して実行すると良い。
+
+```bash
+shfmt -i 2 -ci -w path/to/file
+```

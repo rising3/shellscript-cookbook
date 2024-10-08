@@ -1,0 +1,103 @@
+---
+title: レシピ1-5 環境変数
+---
+
+import { Tabs, TabItem, Code } from '@astrojs/starlight/components';
+import importedCode from '/samples/01/05_bash_env_variables.sh?raw';
+import importedCodeChild from '/samples/01/05_bash_env_variables_child.sh?raw';
+
+環境変数の特徴は、**現在のシェルから子プロセスに環境変数が引き継がれる**ことである。
+シェルスクリプト内で宣言した変数はシェルスクリプト内だけで有効で、子プロセス（スクリプト内から別のシェルスクリプトや外部コマンドを実行するなど）には、それら変数は引き継がれない。
+
+```bash
+#!/abin/bash
+
+stage=prod
+
+# child.shには、stage変数は引き継がれていないため、変数自体が存在していない 
+bash child.sh
+
+```
+一方、環境変数は子プロセスからでも参照することができる。
+
+環境変数は、スクリプトの実行時に外部から設定を引き渡し、振る舞いを変える場合によく使用される。
+
+## 環境変数の宣言
+
+環境変数を宣言するには、`export`コマンドもしくは`declare`コマンドを使用する。
+
+```bash
+# exportで宣言する
+STAGE=prod
+export STAGE 
+
+# 1行で宣言する
+export STAGE=prod
+
+# declareで宣言する
+declare -x STAGE=prod
+```
+
+次のシェルスクリプトを実行し、子プロセスに環境変数が引き継がれていることを確認してほしい。
+
+**環境変数の宣言側:**
+<Code code={importedCode} lang="bash" title="/samples/01/05_bash_env_variables.sh" />
+
+**環境変数の利用側(子プロセス):**
+<Code code={importedCodeChild} lang="bash" title="/samples/01/05_bash_env_variables_child.sh" />
+
+**実行結果:**
+```bash
+» ./05_bash_env_variables.sh
+test1test2test3
+```
+
+:::tip[１回だけ有効な変数の宣言とコマンドへの変数の引き継ぎ]
+コマンドを実行する前に変数を宣言した場合は、その変数は実行時の1回だけ、環境変数として実行するコマンドに引き継がれる。
+変数宣言とコマンドの間はスペースで区切る。
+
+```bash
+» STAGE=prod ./start.sh # start.shスクリプトにSTAGEが環境変数として引き継がれる
+» echo ${STAGE}         # 未宣言変数となり空文字列扱いとなる
+
+```
+:::
+
+##  特殊な変数
+
+あらかじめ宣言されている特殊な環境変数が存在し、printenvコマンドで確認することができる。
+その中でも、よく使用する環境変数を紹介する。
+
+- **BASH:** 現在使用しているbashコマンドのフルパスが格納されている
+- **BASH_VERSION:** 現在使用しているbashコマンドのバージョンが格納されている
+- **HOME:** 現在ログインしているユーザーのホームディレクトリのフルパスが格納されている
+- **IFS:** シェルの区切り文字（スペース、タブ、改行など）が格納されている。指定も可能
+- **LANG:** 現在のロケールが格納されている
+- **LINENO:** 実行中のシェルスクリプトの行番号を格納されている
+- **PATH:** シェルがコマンドを探すディレクトリが可能されている
+- **PWD:** カレントディレクトリが格納されている。pwdコマンドの実行結果と同様
+- **SHELL:** 現在ログインしているユーザーのログインシェルのフルパスが格納されている
+
+## sudo時の環境変数の引き継ぎ
+
+通常、`sudo`でコマンドを実行する際は、シェルの環境変数は`sudo`で実行するコマンドに引き継がれない。
+sudoコマンドの環境変数の扱いについては、`/etc/sudoers`で管理されている。
+デフォルトは`env_reset`が有効になっている。
+そのため、`sudo`でコマンドを実行するユーザー側で環境変数はリセットされる。
+
+環境変数の扱いについては、次の設定を有効にすることで挙動を変更できる。
+
+- **env_reset:** 最小限の環境にリセットされる。
+最小限の環境とは、`/etc/environment`で初期化され、TERM、PATH、HOME、MAIL、SHELL、LOGNAME、USER、USERNAME、およびSUDO_*が含まれる
+- **env_keep:** `env_reset` 有効時に、実行ユーザーから継承する環境変数を定義する
+- **env_check:** `env_reset` 有効時に、条件付きで実行ユーザーから継承する環境変数を定義する。
+条件はTZ以外の全ての環境変数が対象で、変数値に`%`や`/`が含まれないこと
+- **env_delete:** `env_reset` 無効時に、実行ユーザーから継承する環境変数を定義する
+
+整理すると、`sudo`コマンドを実行する側の環境変数を引き継ぐには、次のいずれかを利用する。
+- `env_keep`や`env_check`を利用する
+- `sudo -E`を利用する
+
+`env_keep`や`env_check`は、全ユーザーで共通設定を行う場合は有効で、`sudo -E`は`-E`オプションを指定した場合のみ、`env_reset`が無効化される。
+
+`sudo`でコマンドを実行するユーザー側のログインシェルを有効にするには、`-i`オプションを指定して実行する。

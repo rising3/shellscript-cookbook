@@ -1,0 +1,81 @@
+---
+title: レシピ0-5 リンター
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+プログラミングにおけるリンター（linter）の役割は、ソースコードを静的に解析して、エラーやコーディングスタイルの問題、潜在的な脆弱性を検出し、修正方法を提言することである。
+
+bashのリンターの中でポピュラーなものは[shellcheck](https://github.com/koalaman/shellcheck)だろう。
+
+shellcheckはパッケージマネジャーからインストールすることができる。
+
+<Tabs>
+<TabItem label="Debian系">
+```bash
+sudo apt install shellcheck
+```
+</TabItem>
+<TabItem label="RedHat系">
+```bash
+sudo dnf install shellcheck
+```
+</TabItem>
+<TabItem label="ArchLinux系">
+```bash
+sudo pacman -S shellcheck
+```
+</TabItem>
+<TabItem label="Homebrew">
+```bash
+brew install shellcheck
+```
+</TabItem>
+</Tabs>
+
+このクックブックでは、shellcheckをリンターとして使用する。
+
+shellcheckは次のように実行する。
+```bash
+sheckcheck path/to/file
+```
+
+shellcheckは厳格なチェックを行うため、多くの警告を提言されるが、警告の内容によっては無効にしたいこともある。
+
+shellcheckは警告を無効にするいくつか方法が用意されているので、簡単に紹介する。
+
+**ファイルの先頭にコメントで無効にしたい警告コードを列挙する方法:**
+
+```
+#!/bin/sh
+# shellcheck disable=SC2059
+```
+
+**指摘箇所にコメントで無効にしたい警告コードを列挙する方法:**
+```
+hexToAscii() {
+  # shellcheck disable=SC2059
+  printf "\x$1"
+}
+```
+
+**コマンドオプションで無効にしたい警告コードを列挙する方法:**
+```
+export SHELLCHECK_OPTS="-e SC2059 -e SC2034 -e SC1090"
+```
+
+詳細は、[shellcheck - ignore](https://github.com/koalaman/shellcheck/wiki/Ignore)を参照されたい。
+
+:::note[警告の無効化設定はどこに書くべきか]
+無効化するべき警告の意味を十分理解した上で対処が不要と判断していることを前提として説明する。
+個人の開発環境であれば、`~/.shellcheckrc`や環境変数`SHELLCHECK_OPTS`に警告の無効化設定を行えば良いが、
+他の開発者やCI環境などで設定を共有することに向かない。
+では、他の開発者やCI環境などで設定を共有するには、警告の無効化設定はどこに書くべきか。
+
+方法は２つある。
+- ソースコードにコメントで警告の無効化設定を行う
+- ビルドファイルでshellcheckを実行する際にオプションで警告の無効化設定を行う
+
+ソースコードにコメントすれば、無効化した警告やどこを無効化したかわかるので、開発者と警告の無効化設定を共有できることはメリットであるが、
+コメントが多くなればソースコードの可読性や保守性が低くなるのでビルドファイルの設定と使い分けるのが良いだろう。
+:::
